@@ -23,8 +23,14 @@ class TaskCreateModal extends HookConsumerWidget {
     );
   }
 
-  // final GlobalKey<FormFieldState<String>> nameKey =
-  //     GlobalKey<FormFieldState<String>>();
+  static const appBarKey = Key('TaskCreateModalAppBar');
+  static const taskNoticeCarouselViewKey =
+      Key('TaskCreateModalTaskNoticeCarouselView');
+  static const taskNameFormKey = Key('TaskCreateModaltaskNameForm');
+  static const recommendationTaskTypeInputFormKey =
+      Key('TaskCreateModalRecommendationTaskTypeInputForm');
+  static const submitButtonKey = Key('TaskCreateModalSubmitButton');
+  // static const Key = Key('TaskCreateModal');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,6 +43,7 @@ class TaskCreateModal extends HookConsumerWidget {
     }, const []);
     return Scaffold(
       appBar: AppBar(
+        key: appBarKey,
         title: const Text('Task入力'),
       ),
       body: SingleChildScrollView(
@@ -49,6 +56,7 @@ class TaskCreateModal extends HookConsumerWidget {
               style: Theme.of(context).textTheme.headline5,
             ),
             TaskNoticeCarouselView(
+              key: taskNoticeCarouselViewKey,
               taskType: ref.read(selectedTaskTypeProvider.notifier).state,
             ),
             Center(
@@ -56,14 +64,18 @@ class TaskCreateModal extends HookConsumerWidget {
                 child: Column(
                   children: [
                     TextFormField(
+                      key: taskNameFormKey,
                       onChanged: (value) => taskName.value = value,
                       // key: nameKey,
                       decoration: const InputDecoration(
                         labelText: "Taskの名前",
                       ),
                     ),
-                    const RecommendationTaskTypeInputForm(),
+                    const RecommendationTaskTypeInputForm(
+                      key: recommendationTaskTypeInputFormKey,
+                    ),
                     ElevatedButton(
+                      key: submitButtonKey,
                       onPressed: () async {
                         final String? name = taskName.value;
                         final TaskType? selectedTaskType =
