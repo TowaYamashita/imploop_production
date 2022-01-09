@@ -19,41 +19,44 @@ class RecommendationTodoTypeInputForm extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ValueNotifier<String?> input = useState<String?>(null);
-    final showRecommedationList = useState<bool>(false);
     final selectedTodoType = ref.watch(selectedTodoTypeProvider);
-    final TextEditingController controller = TextEditingController();
+    final ValueNotifier<String?> formInput = useState<String?>(null);
+    final showRecommedationList = useState<bool>(false);
 
-    controller.text = input.value ?? selectedTodoType?.name ?? '';
-    controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: controller.text.length));
-
-    return Column(
-      children: [
-        ListTile(
-          title: TextFormField(
-            decoration: const InputDecoration(hintText: '種類を選択してください'),
-            controller: controller,
-            onChanged: (value) {
-              input.value = value;
-            },
-            onTap: () =>
-                showRecommedationList.value = !showRecommedationList.value,
+    // TodoTypeが選択されていないときは入力フォームを表示する
+    if (selectedTodoType == null) {
+      return Column(
+        children: [
+          ListTile(
+            title: TextFormField(
+              decoration: const InputDecoration(hintText: '種類を選択してください'),
+              initialValue: formInput.value ?? selectedTodoType?.name,
+              onChanged: (value) {
+                formInput.value = value;
+              },
+              onTap: () =>
+                  showRecommedationList.value = !showRecommedationList.value,
+            ),
           ),
-          trailing: IconButton(
-            onPressed: () {
-              input.value = null;
-              showRecommedationList.value = false;
-              ref.read(selectedTodoTypeProvider.notifier).state = null;
-            },
-            icon: const Icon(Icons.cancel_outlined),
+          RecommendationListView(
+            formInput: formInput,
+            visible: showRecommedationList,
           ),
-        ),
-        RecommendationListView(
-          input: input,
-          visible: showRecommedationList,
-        ),
-      ],
+        ],
+      );
+    }
+    // TodoTypeが選択されているときは選択したTodoTypeの名前を表示する
+    return ListTile(
+      title: Text(selectedTodoType.name),
+      trailing: IconButton(
+        // 初期化処理
+        onPressed: () {
+          formInput.value = null;
+          showRecommedationList.value = false;
+          ref.read(selectedTodoTypeProvider.notifier).state = null;
+        },
+        icon: const Icon(Icons.cancel_outlined),
+      ),
     );
   }
 }
@@ -61,18 +64,18 @@ class RecommendationTodoTypeInputForm extends HookConsumerWidget {
 class RecommendationListView extends HookConsumerWidget {
   const RecommendationListView({
     Key? key,
-    required this.input,
+    required this.formInput,
     required this.visible,
   }) : super(key: key);
-  final ValueNotifier<String?> input;
+  final ValueNotifier<String?> formInput;
   final ValueNotifier<bool> visible;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _future = useMemoized(
-      () =>
-          TodoTypeRecommendationLogic.getRecommendationList(input.value ?? ''),
-      [input.value],
+      () => TodoTypeRecommendationLogic.getRecommendationList(
+          formInput.value ?? ''),
+      [formInput.value],
     );
     final _snapshot = useFuture<List<TodoType>>(_future);
 
@@ -121,7 +124,8 @@ class TodoTypeRecommendationLogic {
     }
 
     List<TodoType> result = registeredTodoTypeList.where((registeredTodoType) {
-      return registeredTodoType.name.contains(input);
+      return registeredTodoType.name.contains(input) &&
+          registeredTodoType.name != input;
     }).toList();
     result.insert(0, TodoType(todoTypeId: -1, name: input));
 
