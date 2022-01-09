@@ -4,6 +4,7 @@ import 'package:imploop/domain/task.dart';
 import 'package:imploop/domain/todo.dart';
 import 'package:imploop/page/common/slidable_tile.dart';
 import 'package:imploop/page/task_list/task/task_edit_modal.dart';
+import 'package:imploop/page/task_list/task_list_page.dart';
 import 'package:imploop/page/task_list/todo/todo_create_modal.dart';
 import 'package:imploop/page/task_list/todo/todo_tile.dart';
 import 'package:imploop/service/task_service.dart';
@@ -74,8 +75,7 @@ class TaskTile extends HookWidget {
                       ),
                     ),
                   );
-                  // 前の画面に遷移
-                  Navigator.pop(context);
+                  TaskListPage.show(context);
                 }
               }
             }),
