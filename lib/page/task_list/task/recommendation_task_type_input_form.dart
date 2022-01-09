@@ -23,18 +23,13 @@ class RecommendationTaskTypeInputForm extends HookConsumerWidget {
     final ValueNotifier<String?> input = useState<String?>(null);
     final showRecommedationList = useState<bool>(false);
     final selectedTaskType = ref.watch(selectedTaskTypeProvider);
-    final TextEditingController controller = TextEditingController();
-
-    controller.text = input.value ?? selectedTaskType?.name ?? '';
-    controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: controller.text.length));
 
     return Column(
       children: [
         ListTile(
           title: TextFormField(
               decoration: const InputDecoration(hintText: '種類を選択してください'),
-              controller: controller,
+              initialValue: input.value ?? selectedTaskType?.name,
               onChanged: (value) {
                 input.value = value;
               },
