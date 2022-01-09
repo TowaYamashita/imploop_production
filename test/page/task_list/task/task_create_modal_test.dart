@@ -50,7 +50,7 @@ void main() {
       expect(
         find.byKey(TaskCreateModal.recommendationTaskTypeInputFormKey),
         findsOneWidget,
-        reason: 'Taskの過去の振り返りが表示されること',
+        reason: 'TaskTypeの入力フォームが表示されること',
       );
       expect(
         (evaluateWidget<ElevatedButton>(
