@@ -24,34 +24,51 @@ class RecommendationTaskTypeInputForm extends HookConsumerWidget {
     final showRecommedationList = useState<bool>(false);
     final selectedTaskType = ref.watch(selectedTaskTypeProvider);
 
-    return Column(
-      children: [
-        ListTile(
-          title: TextFormField(
-              decoration: const InputDecoration(hintText: '種類を選択してください'),
-              initialValue: input.value ?? selectedTaskType?.name,
-              onChanged: (value) {
-                input.value = value;
+    // TaskTypeが選択されていないときは入力フォームを表示する
+    if (selectedTaskType == null) {
+      return Column(
+        children: [
+          ListTile(
+            title: TextFormField(
+                decoration: const InputDecoration(hintText: '種類を選択してください'),
+                initialValue: input.value ?? selectedTaskType?.name,
+                onChanged: (value) {
+                  input.value = value;
+                },
+                onTap: () {
+                  showRecommedationList.value = !showRecommedationList.value;
+                }),
+            trailing: IconButton(
+              onPressed: () {
+                input.value = null;
+                showRecommedationList.value = false;
+                ref
+                    .read(selectedTaskTypeProvider.notifier)
+                    .update((state) => null);
               },
-              onTap: () {
-                showRecommedationList.value = !showRecommedationList.value;
-              }),
-          trailing: IconButton(
-            onPressed: () {
-              input.value = null;
-              showRecommedationList.value = false;
-              ref
-                  .read(selectedTaskTypeProvider.notifier)
-                  .update((state) => null);
-            },
-            icon: const Icon(Icons.cancel_outlined),
+              icon: const Icon(Icons.cancel_outlined),
+            ),
           ),
-        ),
-        RecommendationListView(
-          input: input,
-          visible: showRecommedationList,
-        ),
-      ],
+          RecommendationListView(
+            input: input,
+            visible: showRecommedationList,
+          ),
+        ],
+      );
+    }
+
+    // TaskTypeが選択されているときは選択したTaskTypeの名前を表示する
+    return ListTile(
+      title: Text(selectedTaskType.name),
+      trailing: IconButton(
+        // 初期化処理
+        onPressed: () {
+          input.value = null;
+          showRecommedationList.value = false;
+          ref.read(selectedTaskTypeProvider.notifier).update((state) => null);
+        },
+        icon: const Icon(Icons.cancel_outlined),
+      ),
     );
   }
 }
