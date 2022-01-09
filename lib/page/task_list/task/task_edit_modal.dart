@@ -23,6 +23,12 @@ class TaskEditModal extends HookConsumerWidget {
     );
   }
 
+  static const appBarKey = Key('TaskEditModalAppBar');
+  static const taskNameFormKey = Key('TaskEditModaltaskNameForm');
+  static const recommendationTaskTypeInputFormKey =
+      Key('TaskEditModalRecommendationTaskTypeInputForm');
+  static const submitButtonKey = Key('TaskEditModalSubmitButton');
+
   final Task task;
   final GlobalKey<FormFieldState<String>> nameKey =
       GlobalKey<FormFieldState<String>>();
@@ -34,7 +40,8 @@ class TaskEditModal extends HookConsumerWidget {
     /// タスクに既に登録されているTaskTypeでProviderを上書きする
     useEffect(() {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        final currentTaskType = await TaskTypeService.get(task.taskTypeId);
+        final currentTaskType =
+            await ref.read(taskTypeServiceProvider).get(task.taskTypeId);
         ref
             .read(selectedTaskTypeProvider.notifier)
             .update((state) => currentTaskType);
@@ -42,26 +49,30 @@ class TaskEditModal extends HookConsumerWidget {
     }, const []);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(key: appBarKey),
       body: Center(
         child: Form(
           child: Column(
             children: [
               TextFormField(
-                // key: nameKey,
+                key: taskNameFormKey,
                 onChanged: (value) => taskName.value = value,
                 initialValue: task.name,
               ),
               RecommendationTaskTypeInputForm(
+                key: recommendationTaskTypeInputFormKey,
                 task: task,
               ),
               ElevatedButton(
+                key: submitButtonKey,
                 onPressed: () async {
                   String? updatedName = taskName.value ?? task.name;
                   final TaskType? selectedTaskType =
                       ref.read(selectedTaskTypeProvider.notifier).state;
                   final TaskType? registeredTaskType = selectedTaskType != null
-                      ? await TaskTypeService.add(selectedTaskType.name)
+                      ? await ref
+                          .read(taskTypeServiceProvider)
+                          .add(selectedTaskType.name)
                       : null;
                   if (updatedName != null && registeredTaskType != null) {
                     final updatedTask = task.copyWith(

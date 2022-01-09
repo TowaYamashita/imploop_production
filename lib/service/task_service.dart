@@ -14,7 +14,8 @@ class TaskService {
 
     late final TaskType registeredTaskType;
     if (taskType.taskTypeId == -1) {
-      final tmp = await TaskTypeService.add(taskType.name);
+      // TODO: TaskTypeServiceはProvider経由で触るようなクラスだが、やっつけで使う度にnewしている（設計変更のタイミングで一緒に治す）
+      final tmp = await TaskTypeService().add(taskType.name);
       if (tmp == null) {
         return null;
       }
@@ -70,7 +71,7 @@ class TaskService {
   }
 
   static Future<bool> editTask(Task updatedTask) async {
-    if (await TaskTypeService.existsTaskType(updatedTask.taskTypeId)) {
+    if (await TaskTypeService().existsTaskType(updatedTask.taskTypeId)) {
       return await TaskRepository.update(updatedTask);
     }
     return false;
