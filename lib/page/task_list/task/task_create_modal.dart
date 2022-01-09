@@ -30,7 +30,6 @@ class TaskCreateModal extends HookConsumerWidget {
   static const recommendationTaskTypeInputFormKey =
       Key('TaskCreateModalRecommendationTaskTypeInputForm');
   static const submitButtonKey = Key('TaskCreateModalSubmitButton');
-  // static const Key = Key('TaskCreateModal');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
