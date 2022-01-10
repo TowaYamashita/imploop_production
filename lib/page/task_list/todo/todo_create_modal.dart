@@ -27,6 +27,15 @@ class TodoCreateModal extends HookConsumerWidget {
     );
   }
 
+  static const appBarKey = Key('TodoCreateModalAppBar');
+  static const todoNoticeCarouselViewKey =
+      Key('TodoCreateModalTaskNoticeCarouselView');
+  static const todoNameFormKey = Key('TodoCreateModaltodoNameForm');
+  static const todoEstimateFormKey = Key('TodoCreateModaltodoEstimateForm');
+  static const recommendationTodoTypeInputFormKey =
+      Key('TodoCreateModalRecommendationTodoTypeInputForm');
+  static const submitButtonKey = Key('TodoCreateModalSubmitButton');
+
   final Task task;
 
   @override
@@ -41,6 +50,7 @@ class TodoCreateModal extends HookConsumerWidget {
     }, const []);
     return Scaffold(
       appBar: AppBar(
+        key: appBarKey,
         title: const Text('Todo入力'),
       ),
       body: SingleChildScrollView(
@@ -53,6 +63,7 @@ class TodoCreateModal extends HookConsumerWidget {
               style: Theme.of(context).textTheme.headline5,
             ),
             TodoNoticeCarouselView(
+              key: todoNoticeCarouselViewKey,
               todoType: ref.read(selectedTodoTypeProvider.notifier).state,
             ),
             Center(
@@ -61,7 +72,7 @@ class TodoCreateModal extends HookConsumerWidget {
                 child: Column(
                   children: [
                     TextFormField(
-                      // key: nameKey,
+                      key: todoNameFormKey,
                       onChanged: (value) => todoName.value = value,
                       decoration: const InputDecoration(
                         labelText: "Todoの名前",
@@ -75,7 +86,7 @@ class TodoCreateModal extends HookConsumerWidget {
                       },
                     ),
                     TextFormField(
-                      // key: estimateKey,
+                      key: todoEstimateFormKey,
                       onChanged: (value) =>
                           todoEstimate.value = int.parse(value),
                       keyboardType: TextInputType.number,
@@ -93,8 +104,11 @@ class TodoCreateModal extends HookConsumerWidget {
                         return null;
                       },
                     ),
-                    const RecommendationTodoTypeInputForm(),
+                    const RecommendationTodoTypeInputForm(
+                      key: recommendationTodoTypeInputFormKey,
+                    ),
                     ElevatedButton(
+                      key: submitButtonKey,
                       onPressed: () async {
                         final selectedTodoType =
                             ref.read(selectedTodoTypeProvider.notifier).state;
