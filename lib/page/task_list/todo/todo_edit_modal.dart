@@ -23,11 +23,14 @@ class TodoEditModal extends HookConsumerWidget {
     );
   }
 
+  static const appBarKey = Key('TodoEditModalAppBar');
+  static const todoNameFormKey = Key('TodoEditModaltodoNameForm');
+  static const todoEstimateFormKey = Key('TodoEditModaltodoEstimateForm');
+  static const recommendationTodoTypeInputFormKey =
+      Key('TodoEditModalRecommendationTodoTypeInputForm');
+  static const submitButtonKey = Key('TodoEditModalSubmitButton');
+
   final Todo todo;
-  // final GlobalKey<FormFieldState<String>> nameKey =
-  //     GlobalKey<FormFieldState<String>>();
-  // final GlobalKey<FormFieldState<String>> estimateKey =
-  //     GlobalKey<FormFieldState<String>>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,39 +40,44 @@ class TodoEditModal extends HookConsumerWidget {
     /// タスクに既に登録されているTaskTypeでProviderを上書きする
     useEffect(() {
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        final _currentTodoType = await TodoTypeService.get(todo.todoTypeId);
+        final _currentTodoType =
+            await ref.read(todoTypeServiceProvider).get(todo.todoTypeId);
         ref
             .read(selectedTodoTypeProvider.notifier)
             .update((state) => _currentTodoType);
       });
     }, const []);
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(key: appBarKey),
       body: Center(
         child: Form(
           child: Column(
             children: [
               TextFormField(
-                // key: nameKey,
+                key: todoNameFormKey,
                 onChanged: (value) => todoName.value = value,
                 initialValue: todo.name,
               ),
               TextFormField(
-                // key: estimateKey,
+                key: todoEstimateFormKey,
                 onChanged: (value) => todoEstimate.value = int.parse(value),
                 initialValue: todo.estimate.toString(),
               ),
               RecommendationTodoTypeInputForm(
+                key: recommendationTodoTypeInputFormKey,
                 todo: todo,
               ),
               ElevatedButton(
+                key: submitButtonKey,
                 onPressed: () async {
                   String? updatedName = todoName.value ?? todo.name;
                   int? updatedEstimate = todoEstimate.value ?? todo.estimate;
                   final selectedTodoType =
                       ref.read(selectedTodoTypeProvider.notifier).state;
                   final TodoType? registeredTodoType = selectedTodoType != null
-                      ? await TodoTypeService.add(selectedTodoType.name)
+                      ? await ref
+                          .read(todoTypeServiceProvider)
+                          .add(selectedTodoType.name)
                       : null;
                   if (updatedName != null &&
                       updatedEstimate != null &&

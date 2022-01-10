@@ -114,7 +114,7 @@ class RecommendationListView extends HookConsumerWidget {
 class TodoTypeRecommendationLogic {
   static Future<List<TodoType>> getRecommendationList(String input) async {
     final List<TodoType> registeredTodoTypeList =
-        await TodoTypeService.fetchRegisteredTodoTypeList();
+        await TodoTypeService().fetchRegisteredTodoTypeList();
     if (registeredTodoTypeList == []) {
       return [];
     }
