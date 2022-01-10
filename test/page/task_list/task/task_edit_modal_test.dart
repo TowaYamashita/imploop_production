@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:imploop/domain/task.dart';
 import 'package:imploop/domain/task_type.dart';
 import 'package:imploop/page/task_list/task/recommendation_task_type_input_form.dart';
 import 'package:imploop/page/task_list/task/task_edit_modal.dart';
 import 'package:imploop/service/task_type_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import '../../../mock/mock_task.dart';
 import '../../../widget_test_util.dart';
 import 'task_edit_modal_test.mocks.dart';
-
-const _mockTask = Task(
-  taskId: -1,
-  name: 'dummy',
-  statusId: 1,
-  taskTypeId: -1,
-);
 
 const _mockTaskType = TaskType(
   taskTypeId: -1,
@@ -38,7 +31,7 @@ void main() {
       ],
       child: MaterialApp(
         home: TaskEditModal(
-          task: _mockTask,
+          task: mockTask,
         ),
       ),
     ));
