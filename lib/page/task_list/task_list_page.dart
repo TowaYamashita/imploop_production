@@ -17,12 +17,17 @@ class TaskListPage extends HookConsumerWidget {
     );
   }
 
+  static const appBarKey = Key('TaskListPageAppBar');
+  static const taskListKey = Key('TaskListPageTaskList');
+  static const addedTaskButtonKey = Key('TaskListPageAddedTaskButton');
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ValueNotifier<List<Task>?> allTaskList = useState<List<Task>?>(null);
 
     return Scaffold(
       appBar: AppBar(
+        key: appBarKey,
         title: const Text('Task一覧'),
         automaticallyImplyLeading: false,
       ),
@@ -30,9 +35,10 @@ class TaskListPage extends HookConsumerWidget {
         onRefresh: () async {
           allTaskList.value = await TaskService.getAllTask();
         },
-        child: const _TaskList(),
+        child: const _TaskList(key: taskListKey),
       ),
       floatingActionButton: FloatingActionButton(
+        key: addedTaskButtonKey,
         child: const Icon(Icons.add),
         onPressed: () => TaskCreateModal.show(context),
       ),
