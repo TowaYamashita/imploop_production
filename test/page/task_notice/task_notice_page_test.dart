@@ -32,6 +32,15 @@ void main() {
       );
     });
 
+    testWidgets('AppBarの戻るボタン', (tester) async {
+      await bootstrap(tester);
+      expect(
+        evaluateWidget<AppBar>(find.byKey(TaskNoticePage.appBaKey)).automaticallyImplyLeading,
+        isFalse,
+        reason: 'AppBarの戻るボタンが削除されていること',
+      );
+    });
+
     testWidgets('TaskNoticeの入力フォーム', (tester) async {
       await bootstrap(tester);
       expect(
