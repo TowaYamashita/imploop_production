@@ -8,8 +8,8 @@ import 'package:imploop/service/todo_type_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../../mock/mock_todo.dart';
+import '../../../mock/service/mock_service.dart';
 import '../../../widget_test_util.dart';
-import 'todo_edit_modal_test.mocks.dart';
 
 const _mockTodoType = TodoType(
   todoTypeId: -1,
@@ -20,14 +20,14 @@ const _mockTodoType = TodoType(
 void main() {
   /// テスト対象の画面を起動する処理
   bootstrap(WidgetTester tester) async {
-    final MockTodoTypeService mockTodoTypeService = MockTodoTypeService();
-    when(mockTodoTypeService.get(-1))
+    final _mockTodoTypeService = mockTodoTypeService;
+    when(_mockTodoTypeService.get(-1))
         .thenAnswer((_) => Future.value(_mockTodoType));
     await tester.pumpWidget(ProviderScope(
       overrides: [
         selectedTodoTypeProvider.overrideWithValue(StateController(null)),
         todoTypeServiceProvider
-            .overrideWithValue(StateController(mockTodoTypeService)),
+            .overrideWithValue(StateController(_mockTodoTypeService)),
       ],
       child: MaterialApp(
         home: TodoEditModal(

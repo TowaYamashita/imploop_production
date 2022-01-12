@@ -8,8 +8,8 @@ import 'package:imploop/service/task_type_service.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../../mock/mock_task.dart';
+import '../../../mock/service/mock_service.dart';
 import '../../../widget_test_util.dart';
-import 'task_edit_modal_test.mocks.dart';
 
 const _mockTaskType = TaskType(
   taskTypeId: -1,
@@ -20,14 +20,14 @@ const _mockTaskType = TaskType(
 void main() {
   /// テスト対象の画面を起動する処理
   bootstrap(WidgetTester tester) async {
-    final MockTaskTypeService mockTaskTypeService = MockTaskTypeService();
-    when(mockTaskTypeService.get(-1))
+    final _mockTaskTypeService = mockTaskTypeService;
+    when(_mockTaskTypeService.get(-1))
         .thenAnswer((_) => Future.value(_mockTaskType));
     await tester.pumpWidget(ProviderScope(
       overrides: [
         selectedTaskTypeProvider.overrideWithValue(StateController(null)),
         taskTypeServiceProvider
-            .overrideWithValue(StateController(mockTaskTypeService)),
+            .overrideWithValue(StateController(_mockTaskTypeService)),
       ],
       child: MaterialApp(
         home: TaskEditModal(
