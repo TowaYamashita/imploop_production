@@ -5,7 +5,6 @@ import 'package:imploop/domain/todo_type.dart';
 import 'package:imploop/page/task_list/todo/recommendation_todo_type_input_form.dart';
 import 'package:imploop/page/task_list/todo/todo_edit_modal.dart';
 import 'package:imploop/service/todo_type_service.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../../mock/mock_todo.dart';
 import '../../../mock/service/mock_service.dart';
@@ -16,7 +15,6 @@ const _mockTodoType = TodoType(
   name: 'dummyTodoTypeName',
 );
 
-@GenerateMocks([TodoTypeService])
 void main() {
   /// テスト対象の画面を起動する処理
   bootstrap(WidgetTester tester) async {

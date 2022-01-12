@@ -5,7 +5,6 @@ import 'package:imploop/domain/task_type.dart';
 import 'package:imploop/page/task_list/task/recommendation_task_type_input_form.dart';
 import 'package:imploop/page/task_list/task/task_edit_modal.dart';
 import 'package:imploop/service/task_type_service.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import '../../../mock/mock_task.dart';
 import '../../../mock/service/mock_service.dart';
@@ -16,7 +15,6 @@ const _mockTaskType = TaskType(
   name: 'dummyTaskTypeName',
 );
 
-@GenerateMocks([TaskTypeService])
 void main() {
   /// テスト対象の画面を起動する処理
   bootstrap(WidgetTester tester) async {
