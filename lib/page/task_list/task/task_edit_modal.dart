@@ -79,7 +79,7 @@ class TaskEditModal extends HookConsumerWidget {
                       name: updatedName,
                       taskTypeId: registeredTaskType.taskTypeId,
                     );
-                    if (await TaskService.editTask(updatedTask)) {
+                    if (await ref.read(taskServiceProvider).editTask(updatedTask)) {
                       // Taskが追加されたことをスナックバーで通知
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

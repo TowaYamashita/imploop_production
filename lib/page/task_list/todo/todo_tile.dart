@@ -73,9 +73,9 @@ class TodoTile extends ConsumerWidget {
             );
 
             final int countFinishedTodoInTask =
-                (await TaskService.getAllTodoInTask(todo.taskId)).length;
+                (await ref.read(taskServiceProvider).getAllTodoInTask(todo.taskId)).length;
             final bool containsNonFinishedTodo =
-                await TaskService.containsNonFinishedTodo(todo.taskId);
+                await ref.read(taskServiceProvider).containsNonFinishedTodo(todo.taskId);
 
             if (countFinishedTodoInTask != 0 && containsNonFinishedTodo) {
               // タスク一覧画面に遷移
@@ -106,7 +106,7 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TodoCreateModal.show(
                                     context,
-                                    (await TaskService.get(todo.taskId))!,
+                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
                                   );
                                 },
                               ),
@@ -152,7 +152,7 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TaskNoticePage.show(
                                     context,
-                                    (await TaskService.get(todo.taskId))!,
+                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
                                   );
                                 },
                               ),
@@ -161,7 +161,7 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TodoCreateModal.show(
                                     context,
-                                    (await TaskService.get(todo.taskId))!,
+                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
                                   );
                                 },
                               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imploop/domain/task.dart';
 import 'package:imploop/domain/todo.dart';
 import 'package:imploop/page/common/slidable_tile.dart';
@@ -9,7 +10,7 @@ import 'package:imploop/page/task_list/todo/todo_create_modal.dart';
 import 'package:imploop/page/task_list/todo/todo_tile.dart';
 import 'package:imploop/service/task_service.dart';
 
-class TaskTile extends HookWidget {
+class TaskTile extends HookConsumerWidget {
   const TaskTile({
     Key? key,
     required this.title,
@@ -22,7 +23,7 @@ class TaskTile extends HookWidget {
   final Task task;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final _isVisibleTodoList = useState<bool>(false);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -66,7 +67,7 @@ class TaskTile extends HookWidget {
             },
             deleteAction: (context) async {
               if (task.isNotFinished()) {
-                if (await TaskService.deleteTask(task)) {
+                if (await ref.read(taskServiceProvider).deleteTask(task)) {
                   // Taskが追加されたことをスナックバーで通知
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
@@ -88,15 +89,15 @@ class TaskTile extends HookWidget {
   }
 }
 
-class _TodoList extends StatelessWidget {
+class _TodoList extends ConsumerWidget {
   const _TodoList({Key? key, required this.taskId}) : super(key: key);
 
   final int taskId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<List<Todo>>(
-      future: TaskService.getAllTodoInTask(taskId),
+      future: ref.read(taskServiceProvider).getAllTodoInTask(taskId),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const Center(

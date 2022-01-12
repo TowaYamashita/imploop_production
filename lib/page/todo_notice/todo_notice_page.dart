@@ -188,11 +188,11 @@ class _SubmitButton extends ConsumerWidget {
         if (todoNotice.value != null) {
           final String notice = todoNotice.value!;
           if (await TodoNoticeService.register(todo, notice)) {
-            if (await TaskService.containsNonFinishedTodo(todo.taskId)) {
+            if (await ref.read(taskServiceProvider).containsNonFinishedTodo(todo.taskId)) {
               ref.read(selectedTodoProvider.notifier).update((state) => null);
               TimerPage.show(context);
             } else {
-              final Task? finishedTask = await TaskService.get(todo.taskId);
+              final Task? finishedTask = await ref.read(taskServiceProvider).get(todo.taskId);
               TaskNoticePage.show(context, finishedTask!);
             }
           }

@@ -81,7 +81,7 @@ class TaskCreateModal extends HookConsumerWidget {
                             ref.read(selectedTaskTypeProvider.notifier).state;
                         late final Task? addedTask;
                         if (name != null && selectedTaskType != null) {
-                          addedTask = await TaskService.registerNewTask(
+                          addedTask = await ref.read(taskServiceProvider).registerNewTask(
                             name,
                             selectedTaskType,
                           );

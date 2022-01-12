@@ -33,7 +33,7 @@ class TaskListPage extends HookConsumerWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          allTaskList.value = await TaskService.getAllTask();
+          allTaskList.value = await ref.read(taskServiceProvider).getAllTask();
         },
         child: const _TaskList(key: taskListKey),
       ),
@@ -46,13 +46,13 @@ class TaskListPage extends HookConsumerWidget {
   }
 }
 
-class _TaskList extends StatelessWidget {
+class _TaskList extends ConsumerWidget {
   const _TaskList({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder<List<Task>>(
-      future: TaskService.getAllTask(),
+      future: ref.read(taskServiceProvider).getAllTask(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -84,7 +84,7 @@ class _TaskList extends StatelessWidget {
   }
 }
 
-class TaskTileCreator extends HookWidget {
+class TaskTileCreator extends HookConsumerWidget {
   const TaskTileCreator({
     Key? key,
     required this.taskList,
@@ -95,8 +95,9 @@ class TaskTileCreator extends HookWidget {
   final int index;
 
   @override
-  Widget build(BuildContext context) {
-    final _snapshot = useFuture(TaskService.getTodoStatusList(taskList[index]));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _snapshot = useFuture(
+        ref.read(taskServiceProvider).getTodoStatusList(taskList[index]));
     if (!_snapshot.hasData) {
       return const Center(child: CircularProgressIndicator.adaptive());
     }
