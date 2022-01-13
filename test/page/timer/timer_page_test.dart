@@ -15,9 +15,13 @@ void main() {
   final _mockTaskService = mockTaskService;
 
   /// テスト対象の画面を起動する処理
-  bootstrap(WidgetTester tester, Todo? mockTodo) async {
+  bootstrap(
+    WidgetTester tester,
+    Todo? mockTodo, {
+    bool existsTask = true,
+  }) async {
     when(_mockTaskService.getAllTaskWithoutFinished())
-        .thenAnswer((_) => Future.value([mockTask]));
+        .thenAnswer((_) => Future.value(existsTask ? [mockTask] : []));
     when(_mockTaskService.getAllTodoWithoutFinishedInTask(-1))
         .thenAnswer((_) => Future.value([mock.mockTodo]));
     await tester.pumpWidget(
@@ -126,6 +130,93 @@ void main() {
         'やるtodoを選択する',
         reason: 'Todoを選択できるボタンに「やるtodoを選択する」と表示されていること',
       );
+    });
+
+    group('完了状態ではないTaskが存在する場合', () {
+      testWidgets('Taskを選択するダイアログのヘッダー', (tester) async {
+        await bootstrap(tester, null);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(TimerPage.buttonToSelectTodoKey));
+        await tester.pumpAndSettle();
+
+        expect(
+          (evaluateWidget<SimpleDialog>(
+                      find.byKey(TaskSelectorDialog.selectableTodoDialogKey))
+                  .title as Text)
+              .data,
+          'Todoを選択',
+          reason: 'Todoを選択できるボタンを押下すると「Todoを選択」とヘッダーに書かれたダイアログが表示されること',
+        );
+      });
+
+      testWidgets('Taskを選択するダイアログのコンテンツ', (tester) async {
+        await bootstrap(tester, null);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(TimerPage.buttonToSelectTodoKey));
+        await tester.pumpAndSettle();
+
+        expect(
+          (evaluateWidget<ListTile>(
+                      find.byKey(SimpleDialogTaskListTile.taskTileKey).first)
+                  .title as Text)
+              .data,
+          'dummy',
+          reason: 'Todoを選択できるボタンを押下すると「dummy」と書かれたListTileがダイアログの中に表示されること',
+        );
+      });
+
+      testWidgets('Taskに属するTodoの名前を表示するListTile', (tester) async {
+        await bootstrap(tester, null);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(TimerPage.buttonToSelectTodoKey));
+        await tester.pumpAndSettle();
+        await tester
+            .tap(find.byKey(SimpleDialogTaskListTile.taskTileKey).first);
+        await tester.pumpAndSettle();
+
+        expect(
+          (evaluateWidget<ListTile>(
+                      find.byKey(SimpleDialogTodoListTile.todoTileKey).first)
+                  .title as Text)
+              .data,
+          'dummyTodo',
+          reason:
+              '「dummy」と書かれたListTileをタップすると「dummyTodo」と書かれたListTileがダイアログの中に表示されること',
+        );
+      });
+    });
+    group('完了状態ではないTaskが存在しない場合', () {
+      testWidgets('Taskを選択するダイアログのヘッダー', (tester) async {
+        await bootstrap(tester, null, existsTask: false);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(TimerPage.buttonToSelectTodoKey));
+        await tester.pumpAndSettle();
+
+        expect(
+          (evaluateWidget<AlertDialog>(
+                      find.byKey(TaskSelectorDialog.emptyDialogKey))
+                  .title as Text)
+              .data,
+          '選択できるTaskがありません',
+          reason: 'Todoを選択できるボタンを押下すると「選択できるTaskがありません」とヘッダーに書かれたダイアログが表示されること',
+        );
+      });
+
+      testWidgets('Taskを選択するダイアログのコンテンツ', (tester) async {
+        await bootstrap(tester, null, existsTask: false);
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(TimerPage.buttonToSelectTodoKey));
+        await tester.pumpAndSettle();
+
+        expect(
+          ((evaluateWidget<AlertDialog>(
+                      find.byKey(TaskSelectorDialog.emptyDialogKey))
+                  .content as ElevatedButton)
+              .child as Text).data,
+          'Taskを作成する',
+          reason: 'Todoを選択できるボタンを押下すると「Taskを作成する」と書かれたボタンがダイアログの中に表示されること',
+        );
+      });
     });
   });
   group('Todoが選択されている場合', () {

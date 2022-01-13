@@ -35,7 +35,6 @@ class TimerPage extends ConsumerWidget {
   static const buttonToSelectTodoKey = Key('TimerPageButtonToSelectTodo');
   static const buttonToFinishTodoKey = Key('TimerPageButtonToFinishTodo');
   static const buttonToCancelTodoKey = Key('TimerPageButtonToCancelTodo');
-  // static const Key = Key('TimerPage');
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -114,7 +113,7 @@ class TimerPage extends ConsumerWidget {
                               .read(selectedTodoProvider.notifier)
                               .update((state) => null);
                         },
-                        icon: Icon(Icons.cancel_outlined),
+                        icon: const Icon(Icons.cancel_outlined),
                       ),
                     ],
                   ),
@@ -135,8 +134,11 @@ class TaskSelectorDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _snapshot =
-        useFuture(ref.read(taskServiceProvider).getAllTaskWithoutFinished());
+    final _future = useMemoized(
+      () => ref.read(taskServiceProvider).getAllTaskWithoutFinished(),
+      [DateTime.now().second],
+    );
+    final _snapshot = useFuture(_future);
     if (!_snapshot.hasData) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -173,6 +175,8 @@ class SimpleDialogTaskListTile extends HookConsumerWidget {
     required this.task,
   }) : super(key: key);
 
+  static const taskTileKey = Key('SimpleDialogTaskListTileTask');
+
   final Task task;
 
   @override
@@ -194,6 +198,7 @@ class SimpleDialogTaskListTile extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
+          key: taskTileKey,
           leading: _visible.value
               ? const Icon(Icons.arrow_drop_up)
               : const Icon(Icons.arrow_drop_down),
@@ -220,6 +225,8 @@ class SimpleDialogTodoListTile extends ConsumerWidget {
   const SimpleDialogTodoListTile({Key? key, required this.todo})
       : super(key: key);
 
+  static const todoTileKey = Key('SimpleDialogTodoListTileTodo');
+
   final Todo todo;
 
   @override
@@ -230,6 +237,7 @@ class SimpleDialogTodoListTile extends ConsumerWidget {
         Navigator.pop(context, true);
       },
       child: ListTile(
+        key: todoTileKey,
         leading: const Icon(Icons.subdirectory_arrow_right),
         title: Text(todo.name),
       ),
