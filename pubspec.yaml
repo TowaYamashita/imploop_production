@@ -46,6 +46,8 @@ dependencies:
   hooks_riverpod: ^1.0.3
   carousel_slider: ^4.0.0
   persistent_bottom_nav_bar: ^4.0.2
+  mocktail: ^0.0.1-dev.12
+  mockito: ^5.0.17
 
 dev_dependencies:
   flutter_test:

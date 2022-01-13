@@ -11,16 +11,17 @@ class TaskNoticeService {
   /// 記録に成功すればtrue、そうでなければfalseを返す
   static Future<bool> register(Task task, String body) async {
     // DB上に存在しないTaskは記録できない
-    if (!await TaskService.existsTask(task)) {
+    if (!await TaskService().existsTask(task)) {
       return false;
     }
     // DB上に存在しないTaskTypeは記録できない
-    if (!await TaskTypeService.existsTaskType(task.taskTypeId)) {
+    // TODO: TaskTypeServiceはProvider経由で触るようなクラスだが、やっつけで使う度にnewしている（設計変更のタイミングで一緒に治す）
+    if (!await TaskTypeService().existsTaskType(task.taskTypeId)) {
       return false;
     }
 
-    await TaskService.finishTask(task);
-    
+    await TaskService().finishTask(task);
+
     return await TaskNoticeRepository.create(
           task.taskId,
           body,

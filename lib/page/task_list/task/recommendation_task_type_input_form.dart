@@ -85,8 +85,12 @@ class RecommendationListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _future = useMemoized(
-      () =>
-          TaskTypeRecommendationLogic.getRecommendationList(input.value ?? ''),
+      () async {
+        return TaskTypeRecommendationLogic.getRecommendationList(
+          await ref.read(taskTypeServiceProvider).fetchRegisteredTaskTypeList(),
+          input.value ?? '',
+        );
+      },
       [input.value],
     );
     final _snapshot = useFuture<List<TaskType>>(_future);
@@ -124,9 +128,10 @@ class RecommendationListView extends HookConsumerWidget {
 }
 
 class TaskTypeRecommendationLogic {
-  static Future<List<TaskType>> getRecommendationList(String input) async {
-    final List<TaskType> registeredTaskTypeList =
-        await TaskTypeService.fetchRegisteredTaskTypeList();
+  static Future<List<TaskType>> getRecommendationList(
+    List<TaskType> registeredTaskTypeList,
+    String input,
+  ) async {
     if (registeredTaskTypeList == []) {
       return [];
     }

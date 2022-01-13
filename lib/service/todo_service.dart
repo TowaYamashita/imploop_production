@@ -18,7 +18,7 @@ class TodoService {
 
     late final TodoType registeredTodoType;
     if (todoType.todoTypeId == -1) {
-      final tmp = await TodoTypeService.add(todoType.name);
+      final tmp = await TodoTypeService().add(todoType.name);
       if (tmp == null) {
         return null;
       }
@@ -36,7 +36,7 @@ class TodoService {
   }
 
   static Future<bool> editTodo(Todo updatedTodo) async {
-    if (await TodoTypeService.existsTodoType(updatedTodo.todoTypeId)) {
+    if (await TodoTypeService().existsTodoType(updatedTodo.todoTypeId)) {
       return await TodoRepository.update(updatedTodo);
     }
     return false;

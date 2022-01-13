@@ -15,7 +15,7 @@ class TodoNoticeService {
       return false;
     }
     // DB上に存在しないTodoTypeは記録できない
-    if (!await TodoTypeService.existsTodoType(todo.todoTypeId)) {
+    if (!await TodoTypeService().existsTodoType(todo.todoTypeId)) {
       return false;
     }
 
