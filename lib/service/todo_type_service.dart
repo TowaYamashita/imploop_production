@@ -1,11 +1,14 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imploop/domain/todo_type.dart';
 import 'package:imploop/repository/todo_type_repository.dart';
+
+final todoTypeServiceProvider = StateProvider((_) => TodoTypeService());
 
 class TodoTypeService {
   /// 新しく登録しようとしているTypeがすでに登録されていないか判定する
   ///
   /// すでに登録されていればtrue、そうでなければfalseを返す
-  static Future<bool> hasAlreadyRegistered(String name) async {
+  Future<bool> hasAlreadyRegistered(String name) async {
     final List<TodoType> registeredTodoTypeList =
         await TodoTypeRepository.getAll() ?? [];
     return registeredTodoTypeList
@@ -18,7 +21,7 @@ class TodoTypeService {
   /// 登録することができれば新しく登録したTodoTypeのデータを持つTodoTypeクラスを
   ///
   /// 登録できなければ、nullを返す
-  static Future<TodoType?> add(String name) async {
+  Future<TodoType?> add(String name) async {
     if (await hasAlreadyRegistered(name) == false) {
       return await TodoTypeRepository.create(name);
     }
@@ -28,19 +31,19 @@ class TodoTypeService {
   /// 登録済みのTagのリストを取得する
   ///
   /// 1件も登録されていなければ[]を返す
-  static Future<List<TodoType>> fetchRegisteredTodoTypeList() async {
+  Future<List<TodoType>> fetchRegisteredTodoTypeList() async {
     return await TodoTypeRepository.getAll() ?? [];
   }
 
-  static Future<bool> existsTodoType(int todoTypeId) async {
+  Future<bool> existsTodoType(int todoTypeId) async {
     return await TodoTypeRepository.get(todoTypeId) != null;
   }
 
-  static Future<TodoType?> get(int todoTypeId) async {
+  Future<TodoType?> get(int todoTypeId) async {
     return await TodoTypeRepository.get(todoTypeId);
   }
 
-  static Future<TodoType?> getByTypeName(String todoTypeName) async {
+  Future<TodoType?> getByTypeName(String todoTypeName) async {
     final List<TodoType> registeredTodoTypeList =
         await TodoTypeRepository.getAll() ?? [];
     try {

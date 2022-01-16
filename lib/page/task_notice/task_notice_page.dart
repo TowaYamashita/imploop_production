@@ -28,14 +28,20 @@ class TaskNoticePage extends HookWidget {
     );
   }
 
+  static const appBaKey = Key('TaskNoticePageAppBar');
+  static const taskNoticeInputFormFieldKey =
+      Key('TaskNoticePageTaskNoticeInputFormField');
+  static const taskNoticeSubmitButtonKey =
+      Key('TaskNoticePageTaskNoticeSubmitButton');
+
   final Task task;
-  // final noticeFormKey = GlobalKey<FormFieldState<String>>();
 
   @override
   Widget build(BuildContext context) {
     final taskNotice = useState<String?>(null);
     return Scaffold(
       appBar: AppBar(
+        key: appBaKey,
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -68,7 +74,6 @@ class _NoticeFormArea extends StatelessWidget {
     required this.taskNotice,
   }) : super(key: key);
 
-  // final GlobalKey<FormFieldState<String>> formKey;
   final ValueNotifier<String?> taskNotice;
 
   @override
@@ -81,7 +86,7 @@ class _NoticeFormArea extends StatelessWidget {
         children: [
           const Text('タスクの振り返り'),
           TextFormField(
-            // key: formKey,
+            key: TaskNoticePage.taskNoticeInputFormFieldKey,
             onChanged: (value) {
               if (value.length > 0 && value.length <= 400) {
                 taskNotice.value = value;
@@ -124,16 +129,15 @@ class _SubmitButton extends ConsumerWidget {
     Key? key,
     required this.task,
     required this.taskNotice,
-    // required this.noticeFormKey,
   }) : super(key: key);
 
   final Task task;
-  // final GlobalKey<FormFieldState<String>> noticeFormKey;
   final ValueNotifier<String?> taskNotice;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
+      key: TaskNoticePage.taskNoticeSubmitButtonKey,
       onPressed: () async {
         if (taskNotice.value != null) {
           final String notice = taskNotice.value!;

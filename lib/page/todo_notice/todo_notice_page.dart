@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:imploop/domain/task.dart';
 import 'package:imploop/domain/todo.dart';
-import 'package:imploop/page/home/home_page.dart';
 import 'package:imploop/page/task_notice/task_notice_page.dart';
 import 'package:imploop/page/timer/timer_page.dart';
 import 'package:imploop/service/task_service.dart';
@@ -32,14 +31,22 @@ class TodoNoticePage extends HookWidget {
     );
   }
 
+  static const appBarKey = Key('TodoNoticePageAppBar');
+  static const todoEstimateInfoKey = Key('TodoNoticePageTodoEstimateInfo');
+  static const todoElapsedInfoKey = Key('TodoNoticePageTodoElapsedInfo');
+  static const todoNoticeInputFormFieldKey =
+      Key('TodoNoticePageTodoNoticeInputFormField');
+  static const todoNoticeSubmitButtonKey =
+      Key('TodoNoticePageTodoNoticeSubmitButton');
+
   final Todo todo;
-  // final noticeFormKey = GlobalKey<FormFieldState<String>>();
 
   @override
   Widget build(BuildContext context) {
     final todoNotice = useState<String?>(null);
     return Scaffold(
       appBar: AppBar(
+        key: appBarKey,
         automaticallyImplyLeading: false,
       ),
       body: Center(
@@ -84,6 +91,7 @@ class _EstimateAndElapsedInfo extends StatelessWidget {
       child: Column(
         children: [
           ListTile(
+            key: TodoNoticePage.todoEstimateInfoKey,
             leading: const Text('見積もり[分]'),
             title: Text(
               "${todo.estimate}",
@@ -91,6 +99,7 @@ class _EstimateAndElapsedInfo extends StatelessWidget {
             ),
           ),
           ListTile(
+            key: TodoNoticePage.todoElapsedInfoKey,
             leading: const Text('実作業時間[分]'),
             title: Text(
               "${todo.elapsed}",
@@ -111,7 +120,6 @@ class _NoticeFormArea extends StatelessWidget {
     required this.todoNotice,
   }) : super(key: key);
 
-  // final GlobalKey<FormFieldState<String>> formKey;
   final ValueNotifier<String?> todoNotice;
 
   @override
@@ -124,7 +132,7 @@ class _NoticeFormArea extends StatelessWidget {
         children: [
           const Text('振り返り'),
           TextFormField(
-            // key: formKey,
+            key: TodoNoticePage.todoNoticeInputFormFieldKey,
             onChanged: (value) {
               if (value.length > 0 && value.length <= 400) {
                 todoNotice.value = value;
@@ -167,25 +175,24 @@ class _SubmitButton extends ConsumerWidget {
     Key? key,
     required this.todoNotice,
     required this.todo,
-    // required this.noticeFormKey,
   }) : super(key: key);
 
   final Todo todo;
-  // final GlobalKey<FormFieldState<String>> noticeFormKey;
   final ValueNotifier<String?> todoNotice;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
+      key: TodoNoticePage.todoNoticeSubmitButtonKey,
       onPressed: () async {
         if (todoNotice.value != null) {
           final String notice = todoNotice.value!;
           if (await TodoNoticeService.register(todo, notice)) {
-            if (await TaskService.containsNonFinishedTodo(todo.taskId)) {
+            if (await ref.read(taskServiceProvider).containsNonFinishedTodo(todo.taskId)) {
               ref.read(selectedTodoProvider.notifier).update((state) => null);
               TimerPage.show(context);
             } else {
-              final Task? finishedTask = await TaskService.get(todo.taskId);
+              final Task? finishedTask = await ref.read(taskServiceProvider).get(todo.taskId);
               TaskNoticePage.show(context, finishedTask!);
             }
           }
