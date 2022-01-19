@@ -6,7 +6,7 @@ import 'package:imploop/page/timer/timer_page.dart';
 import 'package:imploop/service/task_notice_service.dart';
 
 class TaskNoticePage extends HookWidget {
-  TaskNoticePage({
+  const TaskNoticePage({
     Key? key,
     required this.task,
   }) : super(key: key);
@@ -141,7 +141,9 @@ class _SubmitButton extends ConsumerWidget {
       onPressed: () async {
         if (taskNotice.value != null) {
           final String notice = taskNotice.value!;
-          if (await TaskNoticeService.register(task, notice)) {
+          if (await ref
+              .read(taskNoticeServiceProvider)
+              .register(task, notice)) {
             ref.read(selectedTodoProvider.notifier).update((state) => null);
             TimerPage.show(context);
           }

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:imploop/domain/task_notice.dart';
 import 'package:imploop/domain/task_type.dart';
 import 'package:imploop/domain/todo_notice.dart';
@@ -8,7 +9,7 @@ import 'package:imploop/domain/todo_type.dart';
 import 'package:imploop/service/task_notice_service.dart';
 import 'package:imploop/service/todo_notice_service.dart';
 
-class TodoNoticeCarouselView extends HookWidget {
+class TodoNoticeCarouselView extends HookConsumerWidget {
   const TodoNoticeCarouselView({
     Key? key,
     this.todoType,
@@ -69,9 +70,10 @@ class TodoNoticeCarouselView extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final AsyncSnapshot<List<TodoNotice>> _snapshot =
-        useFuture(TodoNoticeService.getTodoNoticeListByTodoType(todoType));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncSnapshot<List<TodoNotice>> _snapshot = useFuture(
+      ref.read(todoNoticeServiceProvider).getTodoNoticeListByTodoType(todoType),
+    );
     if (!_snapshot.hasData) {
       return const Center(child: CircularProgressIndicator.adaptive());
     }
@@ -102,7 +104,7 @@ class TodoNoticeCarouselView extends HookWidget {
   }
 }
 
-class TaskNoticeCarouselView extends HookWidget {
+class TaskNoticeCarouselView extends HookConsumerWidget {
   const TaskNoticeCarouselView({
     Key? key,
     this.taskType,
@@ -163,9 +165,10 @@ class TaskNoticeCarouselView extends HookWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final AsyncSnapshot<List<TaskNotice>> _snapshot =
-        useFuture(TaskNoticeService.getTaskNoticeListByTaskType(taskType));
+  Widget build(BuildContext context, WidgetRef ref) {
+    final AsyncSnapshot<List<TaskNotice>> _snapshot = useFuture(
+      ref.read(taskNoticeServiceProvider).getTaskNoticeListByTaskType(taskType),
+    );
     if (!_snapshot.hasData) {
       return const Center(child: CircularProgressIndicator.adaptive());
     }

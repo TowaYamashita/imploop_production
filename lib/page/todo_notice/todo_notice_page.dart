@@ -9,7 +9,7 @@ import 'package:imploop/service/task_service.dart';
 import 'package:imploop/service/todo_notice_service.dart';
 
 class TodoNoticePage extends HookWidget {
-  TodoNoticePage({
+  const TodoNoticePage({
     Key? key,
     required this.todo,
   }) : super(key: key);
@@ -187,12 +187,17 @@ class _SubmitButton extends ConsumerWidget {
       onPressed: () async {
         if (todoNotice.value != null) {
           final String notice = todoNotice.value!;
-          if (await TodoNoticeService.register(todo, notice)) {
-            if (await ref.read(taskServiceProvider).containsNonFinishedTodo(todo.taskId)) {
+          if (await ref
+              .read(todoNoticeServiceProvider)
+              .register(todo, notice)) {
+            if (await ref
+                .read(taskServiceProvider)
+                .containsNonFinishedTodo(todo.taskId)) {
               ref.read(selectedTodoProvider.notifier).update((state) => null);
               TimerPage.show(context);
             } else {
-              final Task? finishedTask = await ref.read(taskServiceProvider).get(todo.taskId);
+              final Task? finishedTask =
+                  await ref.read(taskServiceProvider).get(todo.taskId);
               TaskNoticePage.show(context, finishedTask!);
             }
           }

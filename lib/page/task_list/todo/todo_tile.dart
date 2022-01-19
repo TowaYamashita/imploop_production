@@ -62,7 +62,7 @@ class TodoTile extends ConsumerWidget {
       },
       deleteAction: (context) async {
         if (todo.isNotFinished()) {
-          if (await TodoService.deleteTodo(todo)) {
+          if (await ref.read(todoServiceProvider).deleteTodo(todo)) {
             // Taskが追加されたことをスナックバーで通知
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -72,10 +72,13 @@ class TodoTile extends ConsumerWidget {
               ),
             );
 
-            final int countFinishedTodoInTask =
-                (await ref.read(taskServiceProvider).getAllTodoInTask(todo.taskId)).length;
-            final bool containsNonFinishedTodo =
-                await ref.read(taskServiceProvider).containsNonFinishedTodo(todo.taskId);
+            final int countFinishedTodoInTask = (await ref
+                    .read(taskServiceProvider)
+                    .getAllTodoInTask(todo.taskId))
+                .length;
+            final bool containsNonFinishedTodo = await ref
+                .read(taskServiceProvider)
+                .containsNonFinishedTodo(todo.taskId);
 
             if (countFinishedTodoInTask != 0 && containsNonFinishedTodo) {
               // タスク一覧画面に遷移
@@ -106,7 +109,9 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TodoCreateModal.show(
                                     context,
-                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
+                                    (await ref
+                                        .read(taskServiceProvider)
+                                        .get(todo.taskId))!,
                                   );
                                 },
                               ),
@@ -152,7 +157,9 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TaskNoticePage.show(
                                     context,
-                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
+                                    (await ref
+                                        .read(taskServiceProvider)
+                                        .get(todo.taskId))!,
                                   );
                                 },
                               ),
@@ -161,7 +168,9 @@ class TodoTile extends ConsumerWidget {
                                 onPressed: () async {
                                   TodoCreateModal.show(
                                     context,
-                                    (await ref.read(taskServiceProvider).get(todo.taskId))!,
+                                    (await ref
+                                        .read(taskServiceProvider)
+                                        .get(todo.taskId))!,
                                   );
                                 },
                               ),

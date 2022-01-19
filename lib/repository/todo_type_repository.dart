@@ -5,7 +5,7 @@ class TodoTypeRepository {
   static String table = 'todo_type';
   static DBProvider instance = DBProvider.instance;
 
-  static Future<TodoType> create(String name) async {
+  Future<TodoType> create(String name) async {
     final Map<String, String> row = {
       "name": name,
     };
@@ -19,7 +19,7 @@ class TodoTypeRepository {
     );
   }
 
-  static Future<List<TodoType>?> getAll() async {
+  Future<List<TodoType>?> getAll() async {
     final db = await instance.database;
     final rows = await db.rawQuery('SELECT * FROM $table');
     if (rows.isEmpty) return null;
@@ -33,10 +33,10 @@ class TodoTypeRepository {
   }
 
   /// Tagを取得する
-  static Future<TodoType?> get(int todoTypeId) async {
+  Future<TodoType?> get(int todoTypeId) async {
     final db = await instance.database;
-    final rows =
-        await db.rawQuery('SELECT * FROM $table WHERE todo_type_id = ?', [todoTypeId]);
+    final rows = await db
+        .rawQuery('SELECT * FROM $table WHERE todo_type_id = ?', [todoTypeId]);
     if (rows.isEmpty) return null;
 
     return TodoType.fromMap(rows.first);

@@ -3,11 +3,11 @@ import 'package:imploop/repository/database_provider.dart';
 
 /// Taskの永続化処理を行う
 class TaskRepository {
-  static String table = 'task';
-  static DBProvider instance = DBProvider.instance;
+   static String table = 'task';
+   static DBProvider instance = DBProvider.instance;
 
   /// Taskを新規追加する
-  static Future<Task> create(String name, int taskTypeId) async {
+   Future<Task> create(String name, int taskTypeId) async {
     final Map<String, dynamic> row = {
       "name": name,
       "task_type_id": taskTypeId,
@@ -25,7 +25,7 @@ class TaskRepository {
   }
 
   /// 引数をtask_idに持つTaskを取得する
-  static Future<Task?> get(int taskId) async {
+   Future<Task?> get(int taskId) async {
     final db = await instance.database;
     final rows =
         await db.rawQuery('SELECT * FROM $table WHERE task_id = ?', [taskId]);
@@ -35,7 +35,7 @@ class TaskRepository {
   }
 
   /// DBに保存されているTaskをすべて取得する
-  static Future<List<Task>?> getAll() async {
+   Future<List<Task>?> getAll() async {
     final db = await instance.database;
     final rows = await db.rawQuery('SELECT * FROM $table');
     if (rows.isEmpty) return null;
@@ -51,7 +51,7 @@ class TaskRepository {
   /// Taskの名前を更新する
   ///
   /// 更新に成功したらtrue、そうでなければfalseが返ってくる
-  static Future<bool> update(Task updatedTask) async {
+   Future<bool> update(Task updatedTask) async {
     final db = await instance.database;
     final int affectedRowCount = await db.update(
       table,
@@ -66,7 +66,7 @@ class TaskRepository {
   /// Taskを削除する
   ///
   /// 削除に成功したらtrue、そうでなければfalseが返ってくる
-  static Future<bool> delete(Task deletedTask) async {
+   Future<bool> delete(Task deletedTask) async {
     final db = await instance.database;
     final int affectedRowCount = await db.delete(
       table,
