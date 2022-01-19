@@ -10,7 +10,7 @@ import 'package:imploop/page/task_list/todo/recommendation_todo_type_input_form.
 import 'package:imploop/service/todo_service.dart';
 
 class TodoCreateModal extends HookConsumerWidget {
-  TodoCreateModal({
+  const TodoCreateModal({
     Key? key,
     required this.task,
   }) : super(key: key);
@@ -118,12 +118,14 @@ class TodoCreateModal extends HookConsumerWidget {
                         if (_name != null &&
                             _estimate != null &&
                             selectedTodoType != null) {
-                          addedTodo = await TodoService.registerNewTodo(
-                            task,
-                            _name,
-                            _estimate,
-                            selectedTodoType,
-                          );
+                          addedTodo = await ref
+                              .read(todoServiceProvider)
+                              .registerNewTodo(
+                                task,
+                                _name,
+                                _estimate,
+                                selectedTodoType,
+                              );
                         } else {
                           addedTodo = null;
                         }

@@ -70,11 +70,31 @@ class RecommendationListView extends HookConsumerWidget {
   final ValueNotifier<String?> formInput;
   final ValueNotifier<bool> visible;
 
+  Future<List<TodoType>> getRecommendationList(
+      WidgetRef ref, String input) async {
+    final List<TodoType> registeredTodoTypeList =
+        await ref.read(todoTypeServiceProvider).fetchRegisteredTodoTypeList();
+    if (registeredTodoTypeList == []) {
+      return [];
+    }
+
+    if (input.isEmpty) {
+      return registeredTodoTypeList;
+    }
+
+    List<TodoType> result = registeredTodoTypeList.where((registeredTodoType) {
+      return registeredTodoType.name.contains(input) &&
+          registeredTodoType.name != input;
+    }).toList();
+    result.insert(0, TodoType(todoTypeId: -1, name: input));
+
+    return result;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _future = useMemoized(
-      () => TodoTypeRecommendationLogic.getRecommendationList(
-          formInput.value ?? ''),
+      () => getRecommendationList(ref, formInput.value ?? ''),
       [formInput.value],
     );
     final _snapshot = useFuture<List<TodoType>>(_future);
@@ -108,27 +128,5 @@ class RecommendationListView extends HookConsumerWidget {
         ),
       ),
     );
-  }
-}
-
-class TodoTypeRecommendationLogic {
-  static Future<List<TodoType>> getRecommendationList(String input) async {
-    final List<TodoType> registeredTodoTypeList =
-        await TodoTypeService().fetchRegisteredTodoTypeList();
-    if (registeredTodoTypeList == []) {
-      return [];
-    }
-
-    if (input.isEmpty) {
-      return registeredTodoTypeList;
-    }
-
-    List<TodoType> result = registeredTodoTypeList.where((registeredTodoType) {
-      return registeredTodoType.name.contains(input) &&
-          registeredTodoType.name != input;
-    }).toList();
-    result.insert(0, TodoType(todoTypeId: -1, name: input));
-
-    return result;
   }
 }

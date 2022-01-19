@@ -2,10 +2,10 @@ import 'package:imploop/domain/task_type.dart';
 import 'package:imploop/repository/database_provider.dart';
 
 class TaskTypeRepository {
-  static String table = 'task_type';
-  static DBProvider instance = DBProvider.instance;
+   static String table = 'task_type';
+   static DBProvider instance = DBProvider.instance;
 
-  static Future<TaskType> create(String name) async {
+   Future<TaskType> create(String name) async {
     final Map<String, String> row = {
       "name": name,
     };
@@ -19,7 +19,7 @@ class TaskTypeRepository {
     );
   }
 
-  static Future<List<TaskType>?> getAll() async {
+   Future<List<TaskType>?> getAll() async {
     final db = await instance.database;
     final rows = await db.rawQuery('SELECT * FROM $table');
     if (rows.isEmpty) return null;
@@ -33,7 +33,7 @@ class TaskTypeRepository {
   }
 
   /// Tagを取得する
-  static Future<TaskType?> get(int taskTypeId) async {
+   Future<TaskType?> get(int taskTypeId) async {
     final db = await instance.database;
     final rows = await db
         .rawQuery('SELECT * FROM $table WHERE task_type_id = ?', [taskTypeId]);

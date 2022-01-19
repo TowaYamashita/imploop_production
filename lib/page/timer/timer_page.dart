@@ -89,13 +89,15 @@ class TimerPage extends ConsumerWidget {
                   onPressed: () async {
                     final int elapsedMinute =
                         TodoTimer(stopWatchTimer).elapsedMinutes();
-                    if (await TodoService.finishTodo(
-                      selectedTodo,
-                      elapsedMinute,
-                    )) {
+                    if (await ref.read(todoServiceProvider).finishTodo(
+                          selectedTodo,
+                          elapsedMinute,
+                        )) {
                       TodoNoticePage.show(
                         context,
-                        (await TodoService.getTodo(selectedTodo.todoId))!,
+                        (await ref
+                            .read(todoServiceProvider)
+                            .getTodo(selectedTodo.todoId))!,
                       );
                     }
                   },

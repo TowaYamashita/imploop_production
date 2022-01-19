@@ -9,7 +9,7 @@ import 'package:imploop/service/todo_service.dart';
 import 'package:imploop/service/todo_type_service.dart';
 
 class TodoEditModal extends HookConsumerWidget {
-  TodoEditModal({Key? key, required this.todo}) : super(key: key);
+  const TodoEditModal({Key? key, required this.todo}) : super(key: key);
 
   static show(BuildContext context, Todo todo) {
     return Navigator.push(
@@ -87,7 +87,9 @@ class TodoEditModal extends HookConsumerWidget {
                       estimate: updatedEstimate,
                       todoTypeId: registeredTodoType.todoTypeId,
                     );
-                    if (await TodoService.editTodo(updatedTodo)) {
+                    if (await ref
+                        .read(todoServiceProvider)
+                        .editTodo(updatedTodo)) {
                       // Todoが追加されたことをスナックバーで通知
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

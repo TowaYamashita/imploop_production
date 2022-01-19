@@ -2,11 +2,11 @@ import 'package:imploop/domain/task_notice.dart';
 import 'package:imploop/repository/database_provider.dart';
 
 class TaskNoticeRepository {
-  static String table = 'task_notice';
-  static DBProvider instance = DBProvider.instance;
+   static String table = 'task_notice';
+   static DBProvider instance = DBProvider.instance;
 
   /// TaskNoticeを新規追加する
-  static Future<TaskNotice?> create(int taskId, String body) async {
+   Future<TaskNotice?> create(int taskId, String body) async {
     final Map<String, dynamic> row = {
       "task_id": taskId,
       "body": body,
@@ -19,7 +19,7 @@ class TaskNoticeRepository {
   }
 
   /// TaskNoticeを取得する   
-  static Future<TaskNotice?> get(int taskNoticeId) async {
+   Future<TaskNotice?> get(int taskNoticeId) async {
     final db = await instance.database;
     final rows = await db
         .rawQuery('SELECT * FROM $table WHERE task_notice_id = ?', [taskNoticeId]);
@@ -29,7 +29,7 @@ class TaskNoticeRepository {
   }
 
   /// Taskに紐づくTaskNoticeを取得する   
-  static Future<List<TaskNotice>?> getByTaskId(int taskId) async {
+   Future<List<TaskNotice>?> getByTaskId(int taskId) async {
     final db = await instance.database;
     final rows = await db
         .rawQuery('SELECT * FROM $table WHERE task_id = ?', [taskId]);
@@ -45,7 +45,7 @@ class TaskNoticeRepository {
   }
 
   /// すべてのTaskNoticeを取得する
-  static Future<List<TaskNotice>?> getAll() async {
+   Future<List<TaskNotice>?> getAll() async {
     final db = await instance.database;
     final rows = await db.rawQuery('SELECT * FROM $table');
     if (rows.isEmpty) return null;

@@ -6,7 +6,7 @@ class TodoNoticeRepository {
   static DBProvider instance = DBProvider.instance;
 
   /// TodoNoticeを新規追加する
-  static Future<TodoNotice?> create(int todoId, String body) async {
+  Future<TodoNotice?> create(int todoId, String body) async {
     final Map<String, dynamic> row = {
       "todo_id": todoId,
       "body": body,
@@ -19,17 +19,17 @@ class TodoNoticeRepository {
   }
 
   /// TodoNoticeを取得する
-  static Future<TodoNotice?> get(int todoNoticeId) async {
+  Future<TodoNotice?> get(int todoNoticeId) async {
     final db = await instance.database;
-    final rows = await db
-        .rawQuery('SELECT * FROM $table WHERE todo_notice_id = ?', [todoNoticeId]);
+    final rows = await db.rawQuery(
+        'SELECT * FROM $table WHERE todo_notice_id = ?', [todoNoticeId]);
     if (rows.isEmpty) return null;
 
     return TodoNotice.fromMap(rows.first);
   }
 
   /// Todoに紐づくTodoNoticeを取得する
-  static Future<List<TodoNotice>?> getByTodoId(int todoId) async {
+  Future<List<TodoNotice>?> getByTodoId(int todoId) async {
     final db = await instance.database;
     final rows =
         await db.rawQuery('SELECT * FROM $table WHERE todo_id = ?', [todoId]);
@@ -44,7 +44,7 @@ class TodoNoticeRepository {
   }
 
   /// すべてのTodoNoticeを取得する
-  static Future<List<TodoNotice>?> getAll() async {
+  Future<List<TodoNotice>?> getAll() async {
     final db = await instance.database;
     final rows = await db.rawQuery('SELECT * FROM $table');
     if (rows.isEmpty) return null;

@@ -7,7 +7,7 @@ class TodoRepository {
   static DBProvider instance = DBProvider.instance;
 
   /// Todoを新規追加する
-  static Future<Todo> create({
+  Future<Todo> create({
     required int taskId,
     required String name,
     required int estimate,
@@ -37,7 +37,7 @@ class TodoRepository {
   }
 
   /// 引数をtodo_idに持つtodoを取得する
-  static Future<Todo?> get(int todoId) async {
+  Future<Todo?> get(int todoId) async {
     final db = await instance.database;
     final rows =
         await db.rawQuery('SELECT * FROM $table WHERE todo_id = ?', [todoId]);
@@ -47,7 +47,7 @@ class TodoRepository {
   }
 
   /// 引数をtask_idに持つtodoを取得する
-  static Future<List<Todo>?> getByTaskId(int taskId) async {
+  Future<List<Todo>?> getByTaskId(int taskId) async {
     final db = await instance.database;
     final rows =
         await db.rawQuery('SELECT * FROM $table WHERE task_id = ?', [taskId]);
@@ -62,10 +62,10 @@ class TodoRepository {
   }
 
   /// 引数をtodo_type_idに持つtodoを取得する
-  static Future<List<Todo>?> getByTodoTypeId(int todoTypeId) async {
+  Future<List<Todo>?> getByTodoTypeId(int todoTypeId) async {
     final db = await instance.database;
-    final rows =
-        await db.rawQuery('SELECT * FROM $table WHERE todo_type_id = ?', [todoTypeId]);
+    final rows = await db
+        .rawQuery('SELECT * FROM $table WHERE todo_type_id = ?', [todoTypeId]);
     if (rows.isEmpty) return null;
 
     final List<Todo> todoList = [];
@@ -79,7 +79,7 @@ class TodoRepository {
   /// Todoを更新する
   ///
   /// 更新に成功したらtrue、そうでなければfalseが返ってくる
-  static Future<bool> update(Todo updatedTodo) async {
+  Future<bool> update(Todo updatedTodo) async {
     final db = await instance.database;
     final int affectedRowCount = await db.update(
       table,
@@ -94,7 +94,7 @@ class TodoRepository {
   /// Todoを削除する
   ///
   /// 削除に成功したらtrue、そうでなければfalseが返ってくる
-  static Future<bool> delete(Todo deletedTodo) async {
+  Future<bool> delete(Todo deletedTodo) async {
     final db = await instance.database;
     final int affectedRowCount = await db.delete(
       table,
